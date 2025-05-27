@@ -9,13 +9,13 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = 5500;
 
-app.use(express.static(path.join(__dirname, "APITraining")));
+app.use(express.static(path.join(__dirname)));
+app.get('/', (req,res) => {
+    res.sendFile(path.join(__dirname, "index.html"));
+})
 app.get('/api/weather', async(req,res) => {
     const { city } = req.query;
     if (!city) return res.status(400).json({ error: 'Missing city parameter' });
-
-})
-async function getData() {
     try {
       const geoResponse = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=en&format=json`);
       const geoData = await geoResponse.json();
@@ -38,9 +38,9 @@ async function getData() {
       console.error(error);
       res.status(500).json({ error: 'Failed to fetch data' });
   }
-}
+})
 
-getData();
+
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
