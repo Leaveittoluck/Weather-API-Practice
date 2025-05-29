@@ -29,9 +29,13 @@ app.get('/api/weather', async(req,res) => {
       const weatherResponse = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m&timezone=auto`);
       const weatherData = await weatherResponse.json();
 
+      const airQualityResponse = await fetch(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${latitude}&longitude=${longitude}&hourly=carbon_dioxide`);
+      const airData = await airQualityResponse.json();
+
       res.json({
         location: geoData.results[0].name,
         weather: weatherData,
+        airQuality: airData
       });
   }
   catch(error) {

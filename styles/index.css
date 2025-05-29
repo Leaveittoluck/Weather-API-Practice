@@ -1,0 +1,72 @@
+html, body {
+    height: 100%;
+    margin: 0;
+}
+body {
+    background: #2a979b;
+    background: linear-gradient(6deg,rgba(42, 151, 155, 1) 0%, rgba(87, 199, 133, 1) 40%, rgba(196, 235, 113, 1) 62%, rgba(232, 168, 30, 1) 100%);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+.contentWrap {
+    display: flex;
+    flex-direction: column;
+    height: 70vh;
+    border: 2rem dashed;
+    border-color: thistle;
+    border-style: outset;
+    border-right: 2rem outset blueviolet;;
+    border-bottom: 2rem outset blueviolet;
+    box-sizing: border-box;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+#weatherForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 2rem;
+    gap: 1rem;
+    width: 100%;
+    max-width: 500px;
+}
+h2 {
+    font-size: 35px;
+    background:maroon;
+    background-clip: text;
+    color: transparent;
+} 
+.container {
+    display: flex;
+    width: 100%;
+    gap: 0.5rem;
+}
+button {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+}
+.centerLink {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+}
+#weatherResults {
+    margin-top: 1rem;
+    width: 100%;
+    min-height: 60px; 
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    text-align: center;
+}
+#apiWebsite {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: large;
+    text-decoration: none; 
+    color: #2b10c5;
+}
