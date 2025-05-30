@@ -32,10 +32,15 @@ app.get('/api/weather', async(req,res) => {
       const airQualityResponse = await fetch(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${latitude}&longitude=${longitude}&hourly=carbon_dioxide`);
       const airData = await airQualityResponse.json();
 
+      const weeklyForecastResponse = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m&daily=temperature_2m_min,temperature_2m_max`);
+      const weeklyForecastData = await weeklyForecastResponse.json();
+
       res.json({
         location: geoData.results[0].name,
         weather: weatherData,
-        airQuality: airData
+        airQuality: airData,
+        weeklyForecast: weeklyForecastData.daily
+
       });
   }
   catch(error) {
