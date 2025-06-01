@@ -7,11 +7,13 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname,'views'));
 const PORT = 5500;
 
 app.use(express.static(path.join(__dirname)));
 app.get('/', (req,res) => {
-    res.sendFile(path.join(__dirname, "index.html"));
+    res.render('index');
 })
 app.get('/api/weather', async(req,res) => {
     const { city } = req.query;
