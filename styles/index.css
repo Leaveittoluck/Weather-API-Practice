@@ -30,7 +30,7 @@ body {
     border: 2rem;
     gap: 1rem;
     width: 100%;
-    max-width: 500px;
+    max-width: 100%;
 }
 h2 {
     font-size: 35px;
@@ -42,6 +42,7 @@ h2 {
     display: flex;
     width: 100%;
     gap: 0.5rem;
+    justify-content: center;
 }
 button {
     padding: 0.5rem 1rem;
@@ -69,4 +70,14 @@ button {
     font-size: large;
     text-decoration: none; 
     color: #2b10c5;
+}
+.buttonsClass {
+    display:inline-flex;
+    flex-direction: row;
+}
+.buttonsClass {
+    height: max-content;
+    width: max-content;
+    margin-right: 3rem;
+    display:none;
 }
