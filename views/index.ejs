@@ -16,9 +16,9 @@
     </div>
     <div class="contentWrap">
         <h2>Weather Application with Open Meteo</h2>
-        <form id="weatherForm">
+        <form id="weatherForm" method="get">
             <div class="container">
-                <input type="text" id="cityInput" placeholder="Enter city name">
+                <input type="text" id="cityInput" name="city" placeholder="Enter city name" required>
                 <button type="submit">Search</button>
             </div>
             <div class="buttonsContainer">

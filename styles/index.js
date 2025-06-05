@@ -65,17 +65,17 @@ document.addEventListener('DOMContentLoaded', () => {
          
         setupDayButtons(localdailyForecastArray, dayButtons, weatherResults);
 
-        const today = new Date();
-        const todayName = today.toLocaleDateString('en-US', { weekday: 'long' });
-        const todayWeather = localdailyForecastArray[todayName];
+        // const today = new Date();
+        // const todayName = today.toLocaleDateString('en-US', { weekday: 'long' });
+        // const todayWeather = localdailyForecastArray[todayName];
 
-        if (todayWeather) {
-            const formattedDay = todayWeather
-                .map(([time, temp]) => `${time.split("T")[1]}h: ${temp}°C`)
-                .join('\r\n');
+        // if (todayWeather) {
+        //     const formattedDay = todayWeather
+        //         .map(([time, temp]) => `${time.split("T")[1]}h: ${temp}°C`)
+        //         .join('\r\n');
 
-            weatherResults.textContent = `Location: ${data.location}\r\n\n${todayName} Forecast:\r\n${formattedDay}`;
-}
+        //     weatherResults.textContent = `Location: ${data.location}\r\n\n${todayName} Forecast:\r\n${formattedDay}`;
+        // }
 
     } catch (error) {
         weatherResults.textContent = `Error: ${error.message}`;
@@ -121,15 +121,24 @@ function setupDayButtons(localdailyForecastArray, dayButtons, weatherResults) {
 
                     const moreInfoBtn = document.getElementById("moreInfoBtn");
                     moreInfoBtn.addEventListener('click', () => {
-                        const fullDay = dayWeather
-                            .map(([time, temp]) => `${time.split('T')[1]} - ${temp}°C`)
-                            .join('<br>');
+                        weatherResults.innerHTML = '';
+                        const header = document.createElement('p');
+                        header.classList.add('dayFullForecast');
+                        header.innerHTML = `<span style="font-weight: bold;">${selectDay}</span> Full Day Forecast:`;
+                        weatherResults.appendChild(header);
 
-                        weatherResults.innerHTML = `
-                        <p><strong>${selectDay}</strong> Full Day Forecast:</p>
-                        <p>${fullDay}</p>
-                        <button id="backBtn">Back</button>
-                        `;
+                        const columnContainer = document.createElement('div');
+                        columnContainer.classList.add('forecast-column'); // class for styling
+
+                        dayWeather.forEach(([time,temp]) =>{
+                            const hourDiv = document.createElement('div');
+                            hourDiv.classList.add('forecast-entry');
+                            hourDiv.innerHTML = `${time.split('T')[1]}h. - ${temp}°C`;
+                            columnContainer.appendChild(hourDiv);
+                        });
+
+                        weatherResults.appendChild(columnContainer);
+
                     })
                 }
             }
@@ -138,13 +147,13 @@ function setupDayButtons(localdailyForecastArray, dayButtons, weatherResults) {
     
 }
 
-function showCurrentHourWeather(day, localdailyForecastArray, weatherResults) {
-    const closest = getClosestHourWeather(dayWeather);
-    if (closest) {
-        const [time, temp] = closest;
-        return `${dayName} current hour: ${time.split('T')[1]} - ${temp}°C`;
-    }
-    return `${dayName} current hour: No data available`;
-}
+// function showCurrentHourWeather(day, localdailyForecastArray, weatherResults) {
+//     const closest = getClosestHourWeather(localdailyForecastArray);
+//     if (closest) {
+//         const [time, temp] = closest;
+//         return `${day} current hour: ${time.split('T')[1]} - ${temp}°C`;
+//     }
+//     return `${day} current hour: No data available`;
+// }
 
 

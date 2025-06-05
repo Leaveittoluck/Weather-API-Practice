@@ -12,7 +12,7 @@ body {
 .contentWrap {
     display: flex;
     flex-direction: column;
-    height: 70vh;
+    height: min-content;
     border: 2rem dashed;
     border-color: thistle;
     border-style: outset;
@@ -21,7 +21,7 @@ body {
     box-sizing: border-box;
     justify-content: center;
     align-items: center;
-    padding: 2rem;
+    padding: 1rem;
 }
 #weatherForm {
     display: flex;
@@ -31,6 +31,7 @@ body {
     gap: 1rem;
     width: 100%;
     max-width: 100%;
+    
 }
 h2 {
     font-size: 35px;
@@ -80,4 +81,30 @@ button {
     width: max-content;
     margin-right: 3rem;
     display:none;
+}
+
+.dayFullForecast {
+    font-size: medium;
+    font-family: "Noto Sans Mono", monospace;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+    font-variation-settings:
+        "wdth" 100;
+}
+.forecast-column {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  background-color: #f8f8f8;
+  border-radius: 8px;
+}
+
+.forecast-entry {
+  padding: 0.5rem;
+  background-color: #e8f0ff;
+  border-radius: 4px;
+  font-weight: 300;
 }
