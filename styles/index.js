@@ -63,19 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         // Display data
          
-        setupDayButtons(localdailyForecastArray, dayButtons, weatherResults);
-
-        // const today = new Date();
-        // const todayName = today.toLocaleDateString('en-US', { weekday: 'long' });
-        // const todayWeather = localdailyForecastArray[todayName];
-
-        // if (todayWeather) {
-        //     const formattedDay = todayWeather
-        //         .map(([time, temp]) => `${time.split("T")[1]}h: ${temp}°C`)
-        //         .join('\r\n');
-
-        //     weatherResults.textContent = `Location: ${data.location}\r\n\n${todayName} Forecast:\r\n${formattedDay}`;
-        // }
+        setupDayButtons(localdailyForecastArray, dayButtons, weatherResults, data.timezone);
 
     } catch (error) {
         weatherResults.textContent = `Error: ${error.message}`;
@@ -91,24 +79,32 @@ function formatDate(date) {
     return `${day}-${month}-${year}`;
 }
 
-function getClosestHourWeather(dayWeather) {
+function getClosestHourWeather(dayWeather, timezone) {
   const now = new Date();
-  const currentHour = now.getHours().toString().padStart(2, '0');
 
-  return dayWeather.find(([time]) => {
-    const hourFromData = time.split('T')[1].split(':')[0];
-    return hourFromData === currentHour;
-  });
+    // Convert current UTC time to target location local time
+    const formatter = new Intl.DateTimeFormat('en-US', {
+        hour: '2-digit',
+        hour12: false,
+        timeZone: timezone,
+    });
+
+    const currentHourInCity = formatter.format(now);
+
+    return dayWeather.find(([time]) => {
+        const hourFromData = time.split('T')[1].split(':')[0];
+        return hourFromData === currentHourInCity;
+    });
 }
 
-function setupDayButtons(localdailyForecastArray, dayButtons, weatherResults) {
+function setupDayButtons(localdailyForecastArray, dayButtons, weatherResults, timezone) {
     Array.from(dayButtons).forEach(button => {
         button.addEventListener("click", () => {
             const selectDay = button.textContent;
             const dayWeather = localdailyForecastArray[selectDay];
 
             if(dayWeather) {
-                const closest = getClosestHourWeather(dayWeather);
+                const closest = getClosestHourWeather(dayWeather, timezone);
 
                 if(closest) {
                     const [time, temp] = closest;
@@ -146,14 +142,4 @@ function setupDayButtons(localdailyForecastArray, dayButtons, weatherResults) {
     })
     
 }
-
-// function showCurrentHourWeather(day, localdailyForecastArray, weatherResults) {
-//     const closest = getClosestHourWeather(localdailyForecastArray);
-//     if (closest) {
-//         const [time, temp] = closest;
-//         return `${day} current hour: ${time.split('T')[1]} - ${temp}°C`;
-//     }
-//     return `${day} current hour: No data available`;
-// }
-
 
