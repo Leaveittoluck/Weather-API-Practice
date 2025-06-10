@@ -64,6 +64,10 @@ button {
     background-color: rgba(255, 255, 255, 0.2);
     border-radius: 0.5rem;
     padding: 1rem;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+    justify-items: center;
     text-align: center;
 }
 #apiWebsite {
@@ -93,7 +97,10 @@ button {
         "wdth" 100;
 }
 .forecast-column {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;  
+  transform-origin: center;
   display: flex;
+  flex-wrap: wrap;
   flex-direction: row;
   gap: 0.5rem;
   padding: 1rem;
@@ -101,10 +108,23 @@ button {
   background-color: #f8f8f8;
   border-radius: 8px;
 }
+.forecast-column:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    background-color: #f9f9f9;
+}
 
 .forecast-entry {
+  flex:0 1 150px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;  
+  transform-origin: center;
   padding: 0.5rem;
   background-color: #e8f0ff;
   border-radius: 4px;
   font-weight: 300;
+}
+.forecast-entry:hover {
+    transform: scale(1.30);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    background-color: #f9f9f9;
 }

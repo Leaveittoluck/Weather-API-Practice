@@ -30,12 +30,21 @@
                 <button id="Sixth" type="button" class="buttonsClass">Saturday</button>
                 <button id="Seventh" type="button" class="buttonsClass">Sunday</button>
             </div>
-            <div id="weatherResults">
 
+            <div style="display: none;">
+                <%- include('svgWeatherIcons/svgSunIcon')%>
+            </div>
+
+            <div id="weatherResults">
+                <%- include('svgWeatherIcons/svgSunIcon')%>
+                <%- include('svgWeatherIcons/svgRainThunder')%>
             </div>
         </form>
     </div>
-    
+        <script
+        src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs"
+        type="module"
+        ></script>
     
     
 </body>

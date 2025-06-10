@@ -38,24 +38,21 @@ document.addEventListener('DOMContentLoaded', () => {
             const currentDay = localWeeklyForecastArray[i][0];
             localdailyForecastArray[currentDay] = [];
             for(let y = 0; y < 24; y++) {
-                localdailyForecastArray[currentDay].push([timeFromDataArray.time[y], timeFromDataArray.temperature_2m[y]]);
+                localdailyForecastArray[currentDay]
+                    .push(
+                    [   timeFromDataArray.time[y], 
+                        timeFromDataArray.temperature_2m[y],
+                        timeFromDataArray.precipitation_probability[y],
+                        timeFromDataArray.lightning_potential[y]
+                    ]
+                    );
             }
             timeFromDataArray.time = timeFromDataArray.time.slice(24);
             timeFromDataArray.temperature_2m = timeFromDataArray.temperature_2m.slice(24);
+            timeFromDataArray.precipitation_probability = timeFromDataArray.precipitation_probability.slice(24);
+            timeFromDataArray.lightning_potential = timeFromDataArray.lightning_potential.slice(24);
         }
         console.log(localdailyForecastArray);
-        //Fomatting the data into readable results on the page
-        const formattedAllDays = Object.entries(localdailyForecastArray)
-            .map(([day, entries]) => {
-                const formattedEntries = entries
-                    .map(([time,temp]) => {
-                        const hour = time.split("T")[1];
-                        return `${hour}h: ${temp}°C`;
-                    })
-                    .join('\r\n');
-                    return `${day}: \r\n${formattedEntries}`;
-            })
-            .join('\r\n\r\n');
 
         for(i = 0; i < 7; i++) {
             dayButtons[i].textContent = localWeeklyForecastArray[i][0];
@@ -64,7 +61,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Display data
          
         setupDayButtons(localdailyForecastArray, dayButtons, weatherResults, data.timezone);
-
+        console.log('Sun Template:', document.getElementById('sunTemplate'));
+        weatherResults.innerHTML = `<p><strong>Click on any day to display the current weather</strong></p>`;
     } catch (error) {
         weatherResults.textContent = `Error: ${error.message}`;
     }
@@ -91,7 +89,7 @@ function getClosestHourWeather(dayWeather, timezone) {
 
     const currentHourInCity = formatter.format(now);
 
-    return dayWeather.find(([time]) => {
+    return dayWeather.find(([time,temp,precProb,lightningProbability]) => {
         const hourFromData = time.split('T')[1].split(':')[0];
         return hourFromData === currentHourInCity;
     });
@@ -107,11 +105,13 @@ function setupDayButtons(localdailyForecastArray, dayButtons, weatherResults, ti
                 const closest = getClosestHourWeather(dayWeather, timezone);
 
                 if(closest) {
-                    const [time, temp] = closest;
+                    const [time, temp,precProb,lightningProbability] = closest;
+                    let cloudyHTML = '';
 
+                    const sunClone = document.getElementById('sunTemplate').innerHTML;
                     // Display current hour forecast
                     weatherResults.innerHTML = `
-                        <p><strong>${selectDay}</strong>: ${time.split('T')[1]}h. - ${temp}°C</p>
+                        <p><strong>${selectDay}</strong>: ${time.split('T')[1]}h. - ${temp}°C ${sunClone} - Precipitation: ${precProb}%</p>
                         <button id="moreInfoBtn">More Info</button>
                     `;
 
@@ -126,10 +126,10 @@ function setupDayButtons(localdailyForecastArray, dayButtons, weatherResults, ti
                         const columnContainer = document.createElement('div');
                         columnContainer.classList.add('forecast-column'); // class for styling
 
-                        dayWeather.forEach(([time,temp]) =>{
+                        dayWeather.forEach(([time,temp,precProb]) =>{
                             const hourDiv = document.createElement('div');
                             hourDiv.classList.add('forecast-entry');
-                            hourDiv.innerHTML = `${time.split('T')[1]}h. - ${temp}°C`;
+                            hourDiv.innerHTML = `${time.split('T')[1]}h. - ${temp}°C ${sunClone} - Precipitation: ${precProb}%`;
                             columnContainer.appendChild(hourDiv);
                         });
 
