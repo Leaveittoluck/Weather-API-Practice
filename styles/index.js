@@ -132,12 +132,50 @@ function setupDayButtons(localdailyForecastArray, dayButtons, weatherResults, ti
                         dayWeather.forEach(([time,temp,precProb, lightningProbability, cloudCover]) =>{
                             const hourDiv = document.createElement('div');
                             hourDiv.classList.add('forecast-entry');
-                            hourDiv.innerHTML = weatherIconVisualizer([time,temp,precProb, lightningProbability, cloudCover]);
+                            hourDiv.dataset.info = `${time}|${temp}|${precProb}|${lightningProbability}|${cloudCover}`;
+                            hourDiv.innerHTML = weatherIconVisualizer([time, temp, precProb, lightningProbability, cloudCover]);
                             columnContainer.appendChild(hourDiv);
                         });
 
                         weatherResults.appendChild(columnContainer);
 
+                        const backdrop = document.getElementById('backdrop');
+
+                        columnContainer.querySelectorAll('.forecast-entry').forEach(entry => {
+                            entry.addEventListener('click', () => {
+                                document.querySelectorAll('.forecast-entry.expanded').forEach(el => {
+                                    el.classList.remove('expanded');
+                                    const extra = el.querySelector('.forecast-extra');
+                                    if (extra) extra.remove();
+                                })
+
+                                entry.classList.add('expanded');
+
+                                const extra = document.createElement('div');
+                                extra.classList.add('forecast-extra');
+                                const [time, temp, precProb, lightningProbability, cloudCover] = entry.dataset.info.split('|');
+                                extra.innerHTML = `
+                                <strong>Details:</strong><br>
+                                Time: ${time}<br>
+                                Temp: ${temp}°C<br>
+                                Precip: ${precProb}%<br>
+                                Lightning: ${lightningProbability}%<br>
+                                Cloud Cover: ${cloudCover}%
+                                `;
+                                entry.appendChild(extra);
+
+                                backdrop.style.display = 'block';
+                            })
+                        })
+
+                        document.getElementById('backdrop').addEventListener('click', () => {
+                            document.querySelectorAll('.forecast-entry.expanded').forEach(el => {
+                                el.classList.remove('expanded');
+                                const extra = el.querySelector('.forecast-extra');
+                                if (extra) extra.remove();
+                            });
+                        document.getElementById('backdrop').style.display = 'none';
+                        });
                     })
                 }
             }
@@ -155,6 +193,9 @@ function weatherIconVisualizer(entry) {
         precProb > 20 && lightningProbability > 31 ? document.getElementById('rainThunderTemplate').innerHTML
         : cloudCover > 51 && cloudCover <= 70 ? document.getElementById('partlyCloudyTemplate').innerHTML
         : cloudCover > 70 ? document.getElementById('cloudyTemplate').innerHTML
+        : precProb > 20 && lightningProbability < 31 ? document.getElementById('rainyTemplate').innerHTML
+        : hour.split(':')[0] > 20 || hour.split(':')[0] <= 6 && precProb < 20 && cloudCover < 51 ? document.getElementById('clearMoonTemplate').innerHTML
+        : hour.split(':')[0] > 20 || hour.split(':')[0] <= 6 && precProb > 20 ? document.getElementById('rainyMoonTemplate').innerHTML
         : document.getElementById('sunTemplate').innerHTML
     )
 
