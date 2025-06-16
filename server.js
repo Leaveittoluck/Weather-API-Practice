@@ -28,7 +28,7 @@ app.get('/api/weather', async(req,res) => {
 
       const { latitude, longitude } = geoData.results[0];
 
-      const weatherResponse = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m&timezone=auto&hourly=precipitation_probability,lightning_potential`);
+      const weatherResponse = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m&timezone=auto&hourly=precipitation_probability,lightning_potential,cloud_cover`);
       const weatherData = await weatherResponse.json();
 
       const airQualityResponse = await fetch(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${latitude}&longitude=${longitude}&hourly=carbon_dioxide`);

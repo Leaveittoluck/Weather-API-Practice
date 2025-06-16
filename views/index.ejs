@@ -9,7 +9,7 @@
 </head>
 <body>
     <div class="centerLink">
-        <h1>Content is fetched of the API from:</h1>
+        <h1>Content is fetched from the API:</h1>
         <a id="apiWebsite" href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">
             https://open-meteo.com/
         </a>
@@ -33,6 +33,9 @@
 
             <div style="display: none;">
                 <%- include('svgWeatherIcons/svgSunIcon')%>
+                <%- include('svgWeatherIcons/svgCloudy')%>
+                <%- include('svgWeatherIcons/svgPartlyCloudy')%>
+                <%- include('svgWeatherIcons/svgRainThunder')%>
             </div>
 
             <div id="weatherResults">

@@ -43,7 +43,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     [   timeFromDataArray.time[y], 
                         timeFromDataArray.temperature_2m[y],
                         timeFromDataArray.precipitation_probability[y],
-                        timeFromDataArray.lightning_potential[y]
+                        timeFromDataArray.lightning_potential[y],
+                        timeFromDataArray.cloud_cover[y]
                     ]
                     );
             }
@@ -51,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
             timeFromDataArray.temperature_2m = timeFromDataArray.temperature_2m.slice(24);
             timeFromDataArray.precipitation_probability = timeFromDataArray.precipitation_probability.slice(24);
             timeFromDataArray.lightning_potential = timeFromDataArray.lightning_potential.slice(24);
+            timeFromDataArray.lightning_potential = timeFromDataArray.cloud_cover.slice(24);
         }
         console.log(localdailyForecastArray);
 
@@ -89,7 +91,7 @@ function getClosestHourWeather(dayWeather, timezone) {
 
     const currentHourInCity = formatter.format(now);
 
-    return dayWeather.find(([time,temp,precProb,lightningProbability]) => {
+    return dayWeather.find(([time,temp,precProb,lightningProbability,cloudCover]) => {
         const hourFromData = time.split('T')[1].split(':')[0];
         return hourFromData === currentHourInCity;
     });
@@ -105,15 +107,16 @@ function setupDayButtons(localdailyForecastArray, dayButtons, weatherResults, ti
                 const closest = getClosestHourWeather(dayWeather, timezone);
 
                 if(closest) {
-                    const [time, temp,precProb,lightningProbability] = closest;
-                    let cloudyHTML = '';
+                    const [time, temp, precProb, lightningProbability, cloudCover] = closest;
 
                     const sunClone = document.getElementById('sunTemplate').innerHTML;
+                    const rainThunderClone = document.getElementById('rainThunderTemplate').innerHTML;
+                    const partlyCloudyClone = document.getElementById('partlyCloudyTemplate').innerHTML;
+                    const cloudyClone = document.getElementById('cloudyTemplate').innerHTML;
+
                     // Display current hour forecast
-                    weatherResults.innerHTML = `
-                        <p><strong>${selectDay}</strong>: ${time.split('T')[1]}h. - ${temp}°C ${sunClone} - Precipitation: ${precProb}%</p>
-                        <button id="moreInfoBtn">More Info</button>
-                    `;
+                    weatherResults.innerHTML = `<p><strong>${selectDay}</strong>: ${weatherIconVisualizer(closest)}</p>
+                                                <button id="moreInfoBtn">More Info</button>`
 
                     const moreInfoBtn = document.getElementById("moreInfoBtn");
                     moreInfoBtn.addEventListener('click', () => {
@@ -126,10 +129,10 @@ function setupDayButtons(localdailyForecastArray, dayButtons, weatherResults, ti
                         const columnContainer = document.createElement('div');
                         columnContainer.classList.add('forecast-column'); // class for styling
 
-                        dayWeather.forEach(([time,temp,precProb]) =>{
+                        dayWeather.forEach(([time,temp,precProb, lightningProbability, cloudCover]) =>{
                             const hourDiv = document.createElement('div');
                             hourDiv.classList.add('forecast-entry');
-                            hourDiv.innerHTML = `${time.split('T')[1]}h. - ${temp}°C ${sunClone} - Precipitation: ${precProb}%`;
+                            hourDiv.innerHTML = weatherIconVisualizer([time,temp,precProb, lightningProbability, cloudCover]);
                             columnContainer.appendChild(hourDiv);
                         });
 
@@ -141,5 +144,20 @@ function setupDayButtons(localdailyForecastArray, dayButtons, weatherResults, ti
         })
     })
     
+}
+
+function weatherIconVisualizer(entry) {
+    const [time, temp, precProb, lightningProbability, cloudCover] = entry;
+
+    const hour = time.split('T')[1];
+
+    const icon = (
+        precProb > 20 && lightningProbability > 31 ? document.getElementById('rainThunderTemplate').innerHTML
+        : cloudCover > 51 && cloudCover <= 70 ? document.getElementById('partlyCloudyTemplate').innerHTML
+        : cloudCover > 70 ? document.getElementById('cloudyTemplate').innerHTML
+        : document.getElementById('sunTemplate').innerHTML
+    )
+
+    return `${hour}h. - ${temp}°C ${icon} - Precipitation: ${precProb}%`;
 }
 
