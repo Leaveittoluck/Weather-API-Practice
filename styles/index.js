@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     [   timeFromDataArray.time[y], 
                         timeFromDataArray.temperature_2m[y],
                         timeFromDataArray.precipitation_probability[y],
-                        timeFromDataArray.lightning_potential[y],
+                        timeFromDataArray.weather_code[y],
                         timeFromDataArray.cloud_cover[y]
                     ]
                     );
@@ -51,8 +51,8 @@ document.addEventListener('DOMContentLoaded', () => {
             timeFromDataArray.time = timeFromDataArray.time.slice(24);
             timeFromDataArray.temperature_2m = timeFromDataArray.temperature_2m.slice(24);
             timeFromDataArray.precipitation_probability = timeFromDataArray.precipitation_probability.slice(24);
-            timeFromDataArray.lightning_potential = timeFromDataArray.lightning_potential.slice(24);
-            timeFromDataArray.lightning_potential = timeFromDataArray.cloud_cover.slice(24);
+            timeFromDataArray.weather_code = timeFromDataArray.weather_code.slice(24);
+            timeFromDataArray.cloud_cover = timeFromDataArray.cloud_cover.slice(24);
         }
         console.log(localdailyForecastArray);
 
@@ -148,18 +148,19 @@ function setupDayButtons(localdailyForecastArray, dayButtons, weatherResults, ti
                                     const extra = el.querySelector('.forecast-extra');
                                     if (extra) extra.remove();
                                 })
-
+                                
                                 entry.classList.add('expanded');
 
                                 const extra = document.createElement('div');
                                 extra.classList.add('forecast-extra');
                                 const [time, temp, precProb, lightningProbability, cloudCover] = entry.dataset.info.split('|');
+                                const hasLightning = weatherCodeForLightning(lightningProbability) ? 'Lightning likely!' : 'No lightning.';
                                 extra.innerHTML = `
                                 <strong>Details:</strong><br>
                                 Time: ${time}<br>
                                 Temp: ${temp}°C<br>
                                 Precip: ${precProb}%<br>
-                                Lightning: ${lightningProbability}%<br>
+                                Lightning: ${hasLightning}<br>
                                 Cloud Cover: ${cloudCover}%
                                 `;
                                 entry.appendChild(extra);
@@ -190,15 +191,20 @@ function weatherIconVisualizer(entry) {
     const hour = time.split('T')[1];
 
     const icon = (
-        precProb > 20 && lightningProbability > 31 ? document.getElementById('rainThunderTemplate').innerHTML
+        precProb > 20 && lightningProbability >= 95 && lightningProbability <= 100 ? document.getElementById('rainThunderTemplate').innerHTML
         : cloudCover > 51 && cloudCover <= 70 ? document.getElementById('partlyCloudyTemplate').innerHTML
-        : cloudCover > 70 ? document.getElementById('cloudyTemplate').innerHTML
-        : precProb > 20 && lightningProbability < 31 ? document.getElementById('rainyTemplate').innerHTML
+        : cloudCover > 70 && precProb < 20 ? document.getElementById('cloudyTemplate').innerHTML
+        : precProb >= 20 ? document.getElementById('rainyTemplate').innerHTML
         : hour.split(':')[0] > 20 || hour.split(':')[0] <= 6 && precProb < 20 && cloudCover < 51 ? document.getElementById('clearMoonTemplate').innerHTML
         : hour.split(':')[0] > 20 || hour.split(':')[0] <= 6 && precProb > 20 ? document.getElementById('rainyMoonTemplate').innerHTML
         : document.getElementById('sunTemplate').innerHTML
     )
 
     return `${hour}h. - ${temp}°C ${icon} - Precipitation: ${precProb}%`;
+}
+
+function weatherCodeForLightning(lightningProb) {
+    if(lightningProb >= 95 && lightningProb <= 99) return true;
+    return false;
 }
 
